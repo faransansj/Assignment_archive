@@ -21,5 +21,5 @@ def complex_operation(eight_digit_number):
 
 student_ID = input("enter student ID : ")
 
-result = complex_opperation(student_ID)
+result = complex_operation(student_ID)
 print(result)
