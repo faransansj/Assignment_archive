@@ -9,6 +9,7 @@ class Node:
 class LinkedList:
   def __init__(self):
     self.head = None
+    self.tail = None  #tail 변수 추가 
  
   def __str__(self):
     msg = ''
@@ -26,11 +27,18 @@ class LinkedList:
     new_node = Node(data)
     if self.head is None:
       self.head = new_node
-    else:
-      last_node = self.head
-      while last_node.next is not None:
-        last_node = last_node.next
-      last_node.next = new_node
+      self.tail = new_node  #node에 tail  
+    
+     # else문 제거하고 tail바로 뒤에 node 추가 하는 방식으로 수정
+
+    # else:
+    #   last_node = self.head
+    #   while last_node.next is not None:
+    #     last_node = last_node.next
+    #   last_node.next = new_node
+
+    self.tail.next = new_node 
+    self.tail = new_node 
 
   def search(self, target):
     result = None
