@@ -1,4 +1,6 @@
+# ------------------------------------------------------------------------
 # 1. Taylor Series 
+# ------------------------------------------------------------------------
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -30,7 +32,32 @@ plt.ylabel('f(x)')
 plt.title('Taylor Series Approximation of e^x')
 plt.show()
 
+# ------------------------------------------------------------------------
 # 2. Simple Harmonic Oscillator 
+# ------------------------------------------------------------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+from math import *
+
+# const & initial condition 
+omega = 2.0
+x0 = 1.0
+v0 = 1.0
+
+#parameter 
+t = np.linspace(0,20,100)
+
+#function 
+x_t = x0 * np.cos(omega*t) + v0/omega * np.sin(omega*t)
+
+#plotting
+plt.grid(True)
+plt.plot(t,x_t,'r')
+plt.show()
+
+
+
 
 # 3. Three cases for the damping harmonic oscillator 
 
