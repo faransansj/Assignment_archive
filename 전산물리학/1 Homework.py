@@ -56,9 +56,78 @@ plt.grid(True)
 plt.plot(t,x_t,'r')
 plt.show()
 
-
-
-
+# ------------------------------------------------------------------------
 # 3. Three cases for the damping harmonic oscillator 
+# ------------------------------------------------------------------------
+import numpy as np
+import matplotlib.pyplot as plt
 
+from math import *
+
+# Constants and initial conditions
+k = 0.01  # spring constant
+m = 1.0   # mass
+x0 = 1.0  # initial position
+v0 = 0.0  # initial velocity
+
+# Critical damping coefficient
+c_critical = 2 * sqrt(k * m)
+
+# Damping coefficients for each case
+c_over = 2 * c_critical  # Overdamping
+c_crit = c_critical      # Critical Damping
+c_under = 0.5 * c_critical  # Underdamping
+
+# Time array
+t = np.linspace(0, 200, 1000)
+
+# Function to calculate displacement x(t) for different damping cases
+def damped_oscillation(c):
+    omega = sqrt(k / m)
+    gamma = 0.5 * c / m
+
+    if c == c_crit:  # Critical damping
+        A = x0
+        B = v0 + gamma * x0
+        x_t = (A + B * t) * np.exp(-gamma * t)
+    elif c > c_crit:  # Overdamping
+        q = sqrt(gamma**2 - omega**2)
+        A1 = 0.5 * ((1 + gamma/q) * x0 + v0/q)
+        A2 = 0.5 * ((1 - gamma/q) * x0 - v0/q)
+        x_t = A1 * np.exp(-(gamma - q) * t) + A2 * np.exp(-(gamma + q) * t)
+    else:  # Underdamping
+        omega_d = sqrt(omega**2 - gamma**2)
+        A = x0
+        B = (v0 + gamma * x0) / omega_d
+        x_t = np.exp(-gamma * t) * (A * np.cos(omega_d * t) + B * np.sin(omega_d * t))
+
+    return x_t
+
+# Plotting
+plt.figure(figsize=(12, 8))
+
+# Overdamping
+x_over = damped_oscillation(c_over)
+plt.plot(t, x_over, label="Overdamping")
+
+# Critical Damping
+x_crit = damped_oscillation(c_crit)
+plt.plot(t, x_crit, label="Critical Damping")
+
+# Underdamping
+x_under = damped_oscillation(c_under)
+plt.plot(t, x_under, label="Underdamping")
+
+# Additional plot settings
+plt.grid(True)
+plt.xlabel('Time')
+plt.ylabel('Displacement')
+plt.title('Damped Harmonic Oscillators: Overdamping, Critical Damping, Underdamping')
+plt.legend()
+
+plt.show()
+
+# ------------------------------------------------------------------------
 # 4. 1st order Runge-Kutta and 4th order Runge-Kutta method 
+# ------------------------------------------------------------------------
+
