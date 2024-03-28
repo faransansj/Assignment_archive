@@ -131,3 +131,39 @@ plt.show()
 # 4. 1st order Runge-Kutta and 4th order Runge-Kutta method 
 # ------------------------------------------------------------------------
 
+# 4-1. 1st order Runge-Kutta
+import numpy as np 
+import matplotlib.pyplot as plt
+
+# variables 
+m = 2.0
+k = 2.0
+
+# x-axis 
+delta_t = 0.001 # time step 1ms 
+time = np.arange(0.0,20.0,delta_t)
+
+# initial condition
+x0,v0 = 1.0,0.0
+
+# states
+x,v = x0,v0
+
+# result list 
+Y = [] # list position 
+W = [] # list velocuty 
+
+# time steps
+for t in time:
+    v = v + delta_t * (-k/m)*x
+    x = x + delta_t * v
+    Y.append(x)
+    W.append(v)
+
+# plot result 
+plt.grid(True)
+plt.plot(time,Y,'r')
+plt.plot(time,W,'b')
+plt.show()
+
+# 4-2. 4th order Runge-Kutta method
