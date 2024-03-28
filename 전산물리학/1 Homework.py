@@ -53,7 +53,12 @@ x_t = x0 * np.cos(omega*t) + v0/omega * np.sin(omega*t)
 
 #plotting
 plt.grid(True)
-plt.plot(t,x_t,'r')
+plt.plot(t, x_t, 'r', label='Position (x_t)')
+plt.xlabel('Time (s)')  
+plt.ylabel('Position')  
+plt.title('Simple Harmonic Oscillator')  
+
+plt.legend(loc = 'upper right')  
 plt.show()
 
 # ------------------------------------------------------------------------
