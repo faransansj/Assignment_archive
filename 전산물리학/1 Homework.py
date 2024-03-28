@@ -169,46 +169,46 @@ plt.show()
 # 4-2. 4th order Runge-Kutta method
 import numpy as np 
 import matplotlib.pyplot as plt
-
 from numpy.linalg import inv
-from math import * 
 
-# variables 
+# Define the ODE as a function
+def ode(y, t, m, k, c, F0):
+    A = np.array([[m, 0.0],
+                  [0.0, 1.0]])
+    B = np.array([[c, k],
+                  [-1.0, 0.0]])
+    F = np.array([F0, 0.0])
+    dydt = inv(A).dot(F - B.dot(y))
+    return dydt
+
+# Parameters
 m = 2.0
 k = 2.0
-
 c = 1.0
 F0 = 0.0
+delta_t = 0.01 # time step
+time = np.arange(0.0, 20.0, delta_t)
 
-# x-axis 
-delta_t = 0.0001 # time step 1ms 
-time = np.arange(0.0,20.0,delta_t)
+# Initial condition
+y0 = np.array([0.0, 1.0]) # [velocity, position]
 
-# initial condition
-x0,v0 = 1.0,0.0
-
-# initial state
-y = np.array([v0,x0]) #vector [vel, pos]
-
-#metrics
-A = np.array([[m , 0.0],
-             [0.0,1.0]])
-
-B = np.array([[c ,k],
-             [-1.0,0.0]])
-
-F = np.array([0.0,0.0])
-
-# time steps
+# Runge-Kutta 4th order method
+Y = []
+y = y0
 for t in time:
-    v = v + delta_t * (-k/m)*x
-    x = x + delta_t * v
+    k1 = ode(y, t, m, k, c, F0)
+    k2 = ode(y + 0.5 * delta_t * k1, t + 0.5 * delta_t, m, k, c, F0)
+    k3 = ode(y + 0.5 * delta_t * k2, t + 0.5 * delta_t, m, k, c, F0)
+    k4 = ode(y + delta_t * k3, t + delta_t, m, k, c, F0)
 
-    y = y + delta_t * inv(A).dot(F - B.dot(y))
-
+    y = y + delta_t * (k1 + 2*k2 + 2*k3 + k4) / 6.0
     Y.append(y[1])
 
-# plot result 
+# Plot the result
 plt.grid(True)
-plt.plot(time,Y,'r')
+plt.plot(time, Y, 'r')
+plt.xlabel('Time (s)')
+plt.ylabel('Position')
+plt.title('Position vs Time')
 plt.show()
+
