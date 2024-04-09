@@ -1,0 +1,62 @@
+import pygame
+import sys
+
+from math import sin, cos
+
+width = 600
+height = 400
+
+clock = pygame.time.Clock()
+
+l = 100
+a = 0.0
+
+# count = 0
+
+x_center = width/2
+y_center = height/2
+
+screen = pygame.display.set_mode((width,height))
+white = pygame.Color('white')
+black = pygame.Color('black')
+
+screen.fill(white)
+
+pygame.display.update()
+
+def point(a):
+    x = l * sin(a) + x_center
+    y = l * cos(a) + y_center
+    return x, y
+
+def render(xy):
+    x, y = xy
+    pygame.draw.line(screen,black,(x_center,y_center),(x,y),2)
+    pygame.draw.circle(screen,black,(x,y),10)
+
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+
+    x = l * sin(a) + x_center
+    y = l * cos(a) + y_center
+
+    screen.fill(white)
+    pygame.draw.line(screen,black,(x_center,y_center),(x,y),2)
+    pygame.draw.circle(screen,black,(x,y),10)
+
+    # clock.tick(1)
+    # pygame.display.update()
+
+    # count += 1
+    # filename = 'frame%04d.png' % count
+    # pygame.image.save(screen, filename)
+
+    xy = point(a)
+    a += 0.1
+    render(xy)
+
+    clock.tick(100)
+    pygame.display.update()
