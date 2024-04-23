@@ -30,9 +30,13 @@ g = 9.81
 m1, m2 = 1.0, 1.0
 l1, l2 = 2.0, 1.0
 
+omega1, omega2 = 0.0, 0.0               # 초기 각속도
+theta1, theta2 = 0.1, 60 * 3.14 / 180   # 초기 각도 
+gamma = 0.5                             # 감쇠 상수
+
 t, delta_t = 0.0, 0.01
 
-y = np.array([0.0,0.0,1.0,1.0])
+y = np.array([omega1, omega2, theta1, theta2])
 L = np.array([[ll,0.0],[0.0,1.0]])
 F = np.array([0.0,0.0,0.0,0.0])
 
@@ -40,8 +44,8 @@ inv_L = inv(L)
 
 #Slope(G) function
 def G(t,y):
-    F[0] = -m2 * l2 * y[1] * y[1] * sin(y[2] - y[3]) - (m1 + m2) * g * sin(y[2])
-    F[1] = l1 * y[0] * y[0] * sin(y[2] - y[3]) - g * sin(y[3])
+    F[0] = -m2 * l2 * y[1] * y[1] * sin(y[2] - y[3]) - (m1 + m2) * g * sin(y[2]) - gamma * y[0]
+    F[1] = l1 * y[0] * y[0] * sin(y[2] - y[3]) - g * sin(y[3]) - gamma * y[1]
     F[2] = y[0]
     F[3] = y[1]
 
@@ -52,7 +56,7 @@ def G(t,y):
         [0                  , 0                 ,0  ,1],
         ])
         
-    return inv(L).dot(F)
+    return np.linalg.inv(L).dot(F)
 
 #RK4 function 
 def RK4(t, y, delta_t):
@@ -86,7 +90,7 @@ def square(x0,y0,x1,y1,length):
     s3 = (x2+length / 2*cos(line_angle),y2+length / 2*sin(line_angle))
     s4 = (x2-length / 2*cos(line_angle),y2-length / 2*sin(line_angle))
 
-    print(np.arctan(m), line_angle)
+    print(np.arctan(m)*180/np.pi, line_angle*180/np.pi)
     return [s1,s2,s3,s4]
 
 def render(position1_xy, position2_xy):
