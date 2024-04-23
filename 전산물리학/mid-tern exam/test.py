@@ -44,8 +44,8 @@ inv_L = inv(L)
 
 #Slope(G) function
 def G(t,y):
-    F[0] = -m2 * l2 * y[1] * y[1] * sin(y[2] - y[3]) - (m1 + m2) * g * sin(y[2]) - gamma * y[0]
-    F[1] = l1 * y[0] * y[0] * sin(y[2] - y[3]) - g * sin(y[3]) - gamma * y[1]
+    F[0] = -m2 * l2 * y[1] * y[1] * sin(y[2] - y[3]) - (m1 + m2) * air_g * sin(y[2]) - gamma * y[0]
+    F[1] = l1 * y[0] * y[0] * sin(y[2] - y[3]) - air_g * sin(y[3]) - gamma * y[1]
     F[2] = y[0]
     F[3] = y[1]
 
@@ -104,12 +104,31 @@ def render(position1_xy, position2_xy):
     pygame.draw.line(screen,white,(square_pos[0]),(square_pos[3]),3)
     pygame.draw.line(screen,white,(square_pos[2]),(square_pos[3]),3)
 
-    # draw pendulum 1 position 
-    pygame.draw.line(screen, white,(x_center, y_center), (position1_xy[0],position1_xy[1]), 3)
-    pygame.draw.circle(screen, white, (position1_xy[0],position1_xy[1]) , 10)
+    # Pivot point
+    pygame.draw.circle(screen, white, (x_center, y_center) , 30)
+    pygame.draw.circle(screen, black, (x_center, y_center) , 20) 
+    
     # draw pendulum 2 position
     pygame.draw.line(screen, white,(position1_xy[0], position1_xy[1]), (position2_xy[0],position2_xy[1]), 3)
     pygame.draw.circle(screen, white, (position2_xy[0],position2_xy[1]) , 10)
+
+class airplane_gravity():
+    # Define the airplane's gravity function
+    def cal_hypergravity(time, g):
+        val = -0.008 * time**2 + 0.48 * time - 5.4
+        return g * val 
+
+    def hypergravity_time(time, g):
+        if time < 20:
+            return g
+        elif 20 <= time < 45:
+            return airplane_gravity.cal_hypergravity(time, g)
+        elif 40 <= time < 75:
+            return 0 
+        elif 75 <= time < 100:
+            return airplane_gravity.cal_hypergravity(time-60, g)
+        elif 100 <= time <= 120:
+            return g
 
 while True:
     for event in pygame.event.get():
@@ -122,6 +141,7 @@ while True:
     render(position1_xy, position2_xy)
 
     t += delta_t
+    air_g = airplane_gravity.hypergravity_time(t, 9.8)
     y = y + delta_t * RK4(t, y, delta_t)
 
     clock.tick(60)
