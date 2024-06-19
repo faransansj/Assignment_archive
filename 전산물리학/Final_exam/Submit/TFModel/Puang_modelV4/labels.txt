@@ -1,0 +1,11 @@
+0 Airplane
+1 car
+2 bird
+3 cat
+4 noru
+5 dog
+6 flog
+7 horse
+8 boat
+9 bus
+10 puang
