@@ -3,56 +3,60 @@ import itertools
 # Parameters
 block_sizes = [32, 64, 128]
 associativities = [2, 4, 8]
-applications = ['anagram', 'compress95', 'go']
-policy = 'r'  # Random replacement policy
+applications = {
+    'anagram': 'T1_anagram.cfg',
+    'compress95': 'T1_compress95.cfg',
+    'go': 'T1_go.cfg',
+    'gcc': 'T1_gcc.cfg'
+}
+policies = {
+    'FIFO': 'f',
+    'LRU': 'l',
+    'RANDOM': 'r'
+}
 
-def generate_config(block_size, assoc):
-    return f'''-fetch:ifqsize                    4
--fetch:mplat                      3
--fetch:speed                      1
--bpred                        bimod
--bpred:bimod           2048
--bpred:2lev            1 1024 8 0
--bpred:comb            1024
--bpred:ras                        8
--bpred:btb             512 4
--decode:width                     4
--issue:width                      4
--issue:inorder                false
--issue:wrongpath               true
--commit:width                     4
--ruu:size                        16
--lsq:size                         8
--cache:dl1             dl1:128:{block_size}:{assoc}:{policy}
--cache:dl1lat                     1
--cache:dl2             ul2:1024:{block_size}:{assoc}:{policy}
--cache:dl2lat                     6
--cache:il1             il1:512:32:1:l
--cache:il1lat                     1
--cache:il2                      dl2
--cache:il2lat                     6
--cache:flush                  false
--cache:icompress              false
--mem:lat               18 2
--mem:width                        8
--tlb:itlb              itlb:16:4096:4:l
--tlb:dtlb              dtlb:32:4096:4:l
--tlb:lat                         30
--res:ialu                         4
--res:imult                        1
--res:memport                      2
--res:fpalu                        4
--res:fpmult                       1
--bugcompat                    false'''
+def modify_cache_config(template_file, new_file, block_size, assoc, policy_char):
+    with open(template_file, 'r') as f:
+        content = f.readlines()
+    
+    for i, line in enumerate(content):
+        if '-cache:dl1             dl1:' in line:
+            content[i] = f'-cache:dl1             dl1:128:{block_size}:{assoc}:{policy_char}\n'
+        elif '-cache:dl2             ul2:' in line:
+            content[i] = f'-cache:dl2             ul2:1024:{block_size}:{assoc}:{policy_char}\n'
+    
+    with open(new_file, 'w', newline='') as f:
+        f.writelines(content)
 
-# Generate all combinations for each application
-for app in applications:
-    for block_size, assoc in itertools.product(block_sizes, associativities):
-        filename = f"{app}_b{block_size}_a{assoc}_random.cfg"
-        config = generate_config(block_size, assoc)
-        
-        with open(filename, 'w') as f:
-            f.write(config)
-        print(f"Generated {filename}")
+# Calculate total expected configurations
+total_configs = len(applications) * len(block_sizes) * len(associativities) * len(policies)
+print(f"Starting generation of {total_configs} configuration files...\n")
 
-print("\nConfiguration files have been created.")
+# Generate configurations for each application
+counter = 0
+for app, template in applications.items():
+    for block_size, assoc, (policy_name, policy_char) in itertools.product(block_sizes, associativities, policies.items()):
+        new_filename = f"{app}_b{block_size}_a{assoc}_{policy_name.lower()}.cfg"
+        try:
+            modify_cache_config(template, new_filename, block_size, assoc, policy_char)
+            
+            # Verify the file was created correctly
+            with open(new_filename, 'r') as f:
+                if not f.read():
+                    print(f"Warning: {new_filename} is empty!")
+                else:
+                    counter += 1
+                    print(f"Generated {new_filename} ({counter}/{total_configs})")
+        except Exception as e:
+            print(f"Error generating {new_filename}: {str(e)}")
+
+print(f"\nConfiguration files generation complete.")
+print(f"Total files generated: {counter}")
+print(f"Files per application: {len(block_sizes) * len(associativities) * len(policies)}")
+print(f"Applications processed: {len(applications)}")
+print(f"\nBreakdown:")
+print(f"- Applications: {len(applications)} (anagram, compress95, go, gcc)")
+print(f"- Block sizes: {len(block_sizes)} ({', '.join(map(str, block_sizes))})")
+print(f"- Associativities: {len(associativities)} ({', '.join(map(str, associativities))})")
+print(f"- Policies: {len(policies)} ({', '.join(policies.keys())})")
+print(f"Total combinations: {len(applications)} × {len(block_sizes)} × {len(associativities)} × {len(policies)} = {total_configs}")
