@@ -1,0 +1,8 @@
+2025-06-04 05:34:48,150 - minesweeper_helper - INFO - 로거 설정 완료 (로그 파일: /Users/midori/Github/Assignment_archive/파이썬 기초 및 머신러닝 실습/final_project/logs/minesweeper_helper_20250604_053448.log)
+2025-06-04 05:34:48,150 - minesweeper_helper - INFO - 지뢰찾기 헬퍼 시작
+2025-06-04 05:34:48,150 - minesweeper_helper - INFO - 설정 로드 완료
+2025-06-04 05:34:48,150 - minesweeper_helper - INFO - macOS 환경에서 실행 중입니다. pynput 라이브러리를 사용하여 키 입력을 감지합니다.
+2025-06-04 05:34:48,150 - minesweeper_helper - INFO - 콘솔 모드로 실행
+2025-06-04 05:34:48,150 - minesweeper_helper - INFO - pynput을 사용하여 키 리스너 시작됨 (트리거 키: ₩)
+2025-06-04 05:35:18,173 - minesweeper_helper - INFO - 키 리스너 중지됨
+2025-06-04 05:35:18,173 - minesweeper_helper - INFO - 지뢰찾기 헬퍼 종료
